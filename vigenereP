@@ -1,0 +1,184 @@
+	.text
+	.file	"vigenere.c"
+	.globl	main
+	.align	16, 0x90
+	.type	main,@function
+main:                                   # @main
+	.cfi_startproc
+# BB#0:
+	pushq	%rbp
+.Ltmp0:
+	.cfi_def_cfa_offset 16
+.Ltmp1:
+	.cfi_offset %rbp, -16
+	movq	%rsp, %rbp
+.Ltmp2:
+	.cfi_def_cfa_register %rbp
+	subq	$48, %rsp
+	movl	$0, -4(%rbp)
+	movl	%edi, -8(%rbp)
+	movq	%rsi, -16(%rbp)
+	cmpl	$2, -8(%rbp)
+	je	.LBB0_2
+# BB#1:
+	movabsq	$.L.str, %rdi
+	movb	$0, %al
+	callq	printf
+	movl	$1, -4(%rbp)
+	movl	%eax, -28(%rbp)         # 4-byte Spill
+	jmp	.LBB0_14
+.LBB0_2:
+	xorl	%eax, %eax
+	movl	%eax, %edi
+	movabsq	$.L.str.1, %rsi
+	movb	$0, %al
+	callq	get_string
+	movq	%rax, plain
+	movl	$0, -20(%rbp)
+.LBB0_3:                                # =>This Inner Loop Header: Depth=1
+	movslq	-20(%rbp), %rax
+	movq	plain, %rcx
+	movsbl	(%rcx,%rax), %edx
+	cmpl	$0, %edx
+	je	.LBB0_13
+# BB#4:                                 #   in Loop: Header=BB0_3 Depth=1
+	movslq	-20(%rbp), %rax
+	movq	plain, %rcx
+	movsbl	(%rcx,%rax), %edx
+	cmpl	$65, %edx
+	jl	.LBB0_11
+# BB#5:                                 #   in Loop: Header=BB0_3 Depth=1
+	movslq	-20(%rbp), %rax
+	movq	plain, %rcx
+	movsbl	(%rcx,%rax), %edx
+	cmpl	$122, %edx
+	jg	.LBB0_11
+# BB#6:                                 #   in Loop: Header=BB0_3 Depth=1
+	movslq	-20(%rbp), %rax
+	movq	plain, %rcx
+	movsbl	(%rcx,%rax), %edx
+	movslq	-24(%rbp), %rax
+	movq	-16(%rbp), %rcx
+	movq	8(%rcx), %rcx
+	movsbl	(%rcx,%rax), %edi
+	movl	%edx, -32(%rbp)         # 4-byte Spill
+	callq	key
+	movl	-32(%rbp), %edx         # 4-byte Reload
+	addl	%eax, %edx
+	movb	%dl, %sil
+	movslq	-20(%rbp), %rcx
+	movq	plain, %r8
+	movb	%sil, (%r8,%rcx)
+	movslq	-20(%rbp), %rcx
+	movq	plain, %r8
+	movsbl	(%r8,%rcx), %eax
+	cmpl	$122, %eax
+	jle	.LBB0_8
+# BB#7:                                 #   in Loop: Header=BB0_3 Depth=1
+	movl	$122, %eax
+	movslq	-20(%rbp), %rcx
+	movq	plain, %rdx
+	movsbl	(%rdx,%rcx), %esi
+	movl	%eax, -36(%rbp)         # 4-byte Spill
+	movl	%esi, %eax
+	cltd
+	movl	-36(%rbp), %esi         # 4-byte Reload
+	idivl	%esi
+	addl	$96, %edx
+	movb	%dl, %dil
+	movslq	-20(%rbp), %rcx
+	movq	plain, %r8
+	movb	%dil, (%r8,%rcx)
+.LBB0_8:                                #   in Loop: Header=BB0_3 Depth=1
+	movl	-24(%rbp), %eax
+	addl	$1, %eax
+	movl	%eax, -24(%rbp)
+	movslq	-24(%rbp), %rcx
+	movq	-16(%rbp), %rdx
+	movq	8(%rdx), %rdx
+	movsbl	(%rdx,%rcx), %eax
+	cmpl	$0, %eax
+	jne	.LBB0_10
+# BB#9:                                 #   in Loop: Header=BB0_3 Depth=1
+	movl	$0, -24(%rbp)
+.LBB0_10:                               #   in Loop: Header=BB0_3 Depth=1
+	jmp	.LBB0_11
+.LBB0_11:                               #   in Loop: Header=BB0_3 Depth=1
+	jmp	.LBB0_12
+.LBB0_12:                               #   in Loop: Header=BB0_3 Depth=1
+	movl	-20(%rbp), %eax
+	addl	$1, %eax
+	movl	%eax, -20(%rbp)
+	jmp	.LBB0_3
+.LBB0_13:
+	movabsq	$.L.str.2, %rdi
+	movq	plain, %rsi
+	movb	$0, %al
+	callq	printf
+	movl	%eax, -40(%rbp)         # 4-byte Spill
+.LBB0_14:
+	movl	-4(%rbp), %eax
+	addq	$48, %rsp
+	popq	%rbp
+	retq
+.Lfunc_end0:
+	.size	main, .Lfunc_end0-main
+	.cfi_endproc
+
+	.globl	key
+	.align	16, 0x90
+	.type	key,@function
+key:                                    # @key
+	.cfi_startproc
+# BB#0:
+	pushq	%rbp
+.Ltmp3:
+	.cfi_def_cfa_offset 16
+.Ltmp4:
+	.cfi_offset %rbp, -16
+	movq	%rsp, %rbp
+.Ltmp5:
+	.cfi_def_cfa_register %rbp
+	movb	%dil, %al
+	movb	%al, -5(%rbp)
+	movsbl	-5(%rbp), %edi
+	cmpl	$97, %edi
+	jl	.LBB1_2
+# BB#1:
+	movsbl	-5(%rbp), %eax
+	subl	$97, %eax
+	movl	%eax, -4(%rbp)
+	jmp	.LBB1_3
+.LBB1_2:
+	movsbl	-5(%rbp), %eax
+	subl	$65, %eax
+	movl	%eax, -4(%rbp)
+.LBB1_3:
+	movl	-4(%rbp), %eax
+	popq	%rbp
+	retq
+.Lfunc_end1:
+	.size	key, .Lfunc_end1-key
+	.cfi_endproc
+
+	.type	.L.str,@object          # @.str
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.L.str:
+	.asciz	"Usage: ./vigenere <key>\n"
+	.size	.L.str, 25
+
+	.type	.L.str.1,@object        # @.str.1
+.L.str.1:
+	.asciz	"plaintext: "
+	.size	.L.str.1, 12
+
+	.type	plain,@object           # @plain
+	.comm	plain,8,8
+	.type	.L.str.2,@object        # @.str.2
+.L.str.2:
+	.asciz	"ciphertext: %s\n"
+	.size	.L.str.2, 16
+
+
+	.ident	"clang version 3.8.0-2ubuntu3~trusty5 (tags/RELEASE_380/final)"
+	.section	".note.GNU-stack","",@progbits

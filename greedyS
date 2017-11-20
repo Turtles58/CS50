@@ -1,0 +1,118 @@
+	.file	"greedy.c"
+	.globl	denoms
+	.data
+	.align 16
+	.type	denoms, @object
+	.size	denoms, 16
+denoms:
+	.long	25
+	.long	10
+	.long	5
+	.long	1
+	.section	.rodata
+.LC0:
+	.string	"How much change? "
+.LC1:
+	.string	"%i\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB2:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movl	$.LC0, %edi
+	movl	$0, %eax
+	call	printf
+	movl	$0, %edi
+	movl	$0, %eax
+	call	get_double
+	movsd	%xmm0, -24(%rbp)
+	movq	-24(%rbp), %rax
+	movq	%rax, -8(%rbp)
+	movq	-8(%rbp), %rax
+	movq	%rax, -24(%rbp)
+	movsd	-24(%rbp), %xmm0
+	call	minimum
+	movl	%eax, %esi
+	movl	$.LC1, %edi
+	movl	$0, %eax
+	call	printf
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	main, .-main
+	.section	.rodata
+.LC3:
+	.string	"%i!%f!"
+	.text
+	.globl	minimum
+	.type	minimum, @function
+minimum:
+.LFB3:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	subq	$32, %rsp
+	movsd	%xmm0, -24(%rbp)
+	movsd	-24(%rbp), %xmm1
+	movsd	.LC2(%rip), %xmm0
+	mulsd	%xmm1, %xmm0
+	cvttsd2si	%xmm0, %eax
+	movl	%eax, -12(%rbp)
+	movq	-24(%rbp), %rax
+	movl	-12(%rbp), %edx
+	movq	%rax, -32(%rbp)
+	movsd	-32(%rbp), %xmm0
+	movl	%edx, %esi
+	movl	$.LC3, %edi
+	movl	$1, %eax
+	call	printf
+	movl	$0, -8(%rbp)
+	movl	$0, -4(%rbp)
+	jmp	.L3
+.L5:
+	movl	-8(%rbp), %eax
+	cltq
+	movl	denoms(,%rax,4), %eax
+	cmpl	-12(%rbp), %eax
+	jg	.L4
+	movl	-8(%rbp), %eax
+	cltq
+	movl	denoms(,%rax,4), %eax
+	subl	%eax, -12(%rbp)
+	addl	$1, -4(%rbp)
+.L4:
+	movl	-8(%rbp), %eax
+	cltq
+	movl	denoms(,%rax,4), %eax
+	cmpl	-12(%rbp), %eax
+	jle	.L3
+	addl	$1, -8(%rbp)
+.L3:
+	cmpl	$3, -8(%rbp)
+	jle	.L5
+	movl	-4(%rbp), %eax
+	leave
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	minimum, .-minimum
+	.section	.rodata
+	.align 8
+.LC2:
+	.long	0
+	.long	1079574528
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits

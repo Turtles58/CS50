@@ -1,0 +1,176 @@
+	.file	"vigenere.c"
+	.comm	plain,8,8
+	.section	.rodata
+.LC0:
+	.string	"Usage: ./vigenere <key>"
+.LC1:
+	.string	"plaintext: "
+.LC2:
+	.string	"ciphertext: %s\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB2:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	pushq	%r12
+	pushq	%rbx
+	subq	$32, %rsp
+	.cfi_offset 12, -24
+	.cfi_offset 3, -32
+	movl	%edi, -36(%rbp)
+	movq	%rsi, -48(%rbp)
+	cmpl	$2, -36(%rbp)
+	je	.L2
+	movl	$.LC0, %edi
+	call	puts
+	movl	$1, %eax
+	jmp	.L1
+.L2:
+	movl	$.LC1, %esi
+	movl	$0, %edi
+	movl	$0, %eax
+	call	get_string
+	movq	%rax, plain(%rip)
+	movl	$0, -24(%rbp)
+	jmp	.L4
+.L7:
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	cmpb	$64, %al
+	jle	.L5
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	cmpb	$122, %al
+	jg	.L5
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	leaq	(%rdx,%rax), %rbx
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	movl	%eax, %r12d
+	movq	-48(%rbp), %rax
+	addq	$8, %rax
+	movq	(%rax), %rdx
+	movl	-20(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	movsbl	%al, %eax
+	movl	%eax, %edi
+	call	key
+	addl	%r12d, %eax
+	movb	%al, (%rbx)
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	cmpb	$122, %al
+	jle	.L6
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	leaq	(%rdx,%rax), %rcx
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %edx
+	movsbw	%dl, %ax
+	imull	$-121, %eax, %eax
+	shrw	$8, %ax
+	addl	%edx, %eax
+	sarb	$6, %al
+	movl	%eax, %esi
+	movl	%edx, %eax
+	sarb	$7, %al
+	subl	%eax, %esi
+	movl	%esi, %eax
+	movl	$122, %esi
+	imull	%esi, %eax
+	subl	%eax, %edx
+	movl	%edx, %eax
+	addl	$96, %eax
+	movb	%al, (%rcx)
+.L6:
+	addl	$1, -20(%rbp)
+	movq	-48(%rbp), %rax
+	addq	$8, %rax
+	movq	(%rax), %rdx
+	movl	-20(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	jne	.L5
+	movl	$0, -20(%rbp)
+.L5:
+	addl	$1, -24(%rbp)
+.L4:
+	movq	plain(%rip), %rdx
+	movl	-24(%rbp), %eax
+	cltq
+	addq	%rdx, %rax
+	movzbl	(%rax), %eax
+	testb	%al, %al
+	jne	.L7
+	movq	plain(%rip), %rax
+	movq	%rax, %rsi
+	movl	$.LC2, %edi
+	movl	$0, %eax
+	call	printf
+.L1:
+	addq	$32, %rsp
+	popq	%rbx
+	popq	%r12
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE2:
+	.size	main, .-main
+	.globl	key
+	.type	key, @function
+key:
+.LFB3:
+	.cfi_startproc
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	%edi, %eax
+	movb	%al, -4(%rbp)
+	cmpb	$96, -4(%rbp)
+	jle	.L9
+	movsbl	-4(%rbp), %eax
+	subl	$97, %eax
+	jmp	.L10
+.L9:
+	movsbl	-4(%rbp), %eax
+	subl	$65, %eax
+.L10:
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE3:
+	.size	key, .-key
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
+	.section	.note.GNU-stack,"",@progbits
